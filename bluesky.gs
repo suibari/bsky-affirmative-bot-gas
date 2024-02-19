@@ -51,6 +51,42 @@ function replyAffermativeWord(replypost) {
   return responseJSON;
 }
 
+// あいさつを投稿
+function postGreets(user) {
+  const session = createSession();
+  const jwt = session.accessJwt;
+  const did = session.did;
+
+  const url = 'https://bsky.social/xrpc/com.atproto.repo.createRecord';
+
+  const text = "@"+user.handle+"\n"+
+               "こんにちは！\n"+
+               "全肯定botたんです！\n"+
+               "あなたのポストに全肯定でリプライするよ！\n"+
+               "すぐには反応できないかもだけど許してね～。\n"+
+               "これからもよろしくね！";
+  
+  const data = {
+    'repo': did,
+    'collection': 'app.bsky.feed.post',
+    'record': createRecord(text)
+  };
+
+  const options = {
+    'method': 'post',
+    'headers': {
+      'Authorization': `Bearer ${jwt}`,
+      'Content-Type': 'application/json; charset=UTF-8'
+    },
+    'payload': JSON.stringify(data),
+  };
+
+  const response = UrlFetchApp.fetch(url, options);
+  const responseJSON = JSON.parse(response.getContentText());
+  console.log(responseJSON);
+  return responseJSON;
+}
+
 function createRecord(text) {
   const record = {
     'text': text,

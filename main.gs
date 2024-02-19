@@ -11,6 +11,7 @@ function main() {
       // DB記録
       insertDb(follower.did);
       // あいさつポスト
+      replyGreets(follower);
     } else {
       // フォロー記録があれば時刻比較
       const feed = getAuthorFeed(follower);
