@@ -8,10 +8,10 @@ function main() {
     if (!selectDb(follower.did)) {
       // フォロー記録がなければフォロー
       followSpecificUser(follower);
-      // DB記録
-      insertDb(follower.did);
       // あいさつポスト
       postGreets(follower);
+      // DB記録
+      insertDb(follower.did);
     } else {
       // フォロー記録があれば時刻比較
       const feed = getAuthorFeed(follower);

@@ -69,7 +69,7 @@ function postGreets(user) {
   const data = {
     'repo': did,
     'collection': 'app.bsky.feed.post',
-    'record': createRecord(text)
+    'record': createRecordUrl(text, user)
   };
 
   const options = {
@@ -85,6 +85,24 @@ function postGreets(user) {
   const responseJSON = JSON.parse(response.getContentText());
   console.log(responseJSON);
   return responseJSON;
+}
+
+function testPostGreets() {
+  const user = { 
+    did: 'did:plc:uixgxpiqf4i63p6rgpu7ytmx',
+    handle: 'suibari-cha.bsky.social',
+    displayName: 'すいばり',
+    avatar: 'https://cdn.bsky.app/img/avatar/plain/did:plc:uixgxpiqf4i63p6rgpu7ytmx/bafkreifj3ckabgb5ebnt3nfmd2yc3ksx5va4dzqmcwgco3624q6m2tun2q@jpeg',
+    viewer: 
+     { muted: false,
+       blockedBy: false,
+       following: 'at://did:plc:qcwhrvzx6wmi5hz775uyi6fh/app.bsky.graph.follow/3klu4dch27m26',
+       followedBy: 'at://did:plc:uixgxpiqf4i63p6rgpu7ytmx/app.bsky.graph.follow/3klqu5x6e6u2q' },
+    labels: [],
+    description: 'エンジニア&&絵描き&&ゲーマー\n年齢はHIKAKIN世代で、三人娘育児中\n\n🖼: https://www.pixiv.net/users/251033\n🔧: https://qiita.com/Suibari_cha\n🗒: https://note.com/suibari\n\n作ったもの\nNPB選手名鑑LINEbot: https://lin.ee/CqYJbKN\n全肯定Bsky bot: https://bsky.app/profile/suibari-bot.bsky.social',
+    indexedAt: '2024-02-19T15:37:12.266Z' 
+  };
+  postGreets(user);
 }
 
 function createRecord(text) {
@@ -112,6 +130,28 @@ function createRecordReply(text, replypost) {
     }
   }
 
+  return record;
+}
+
+function createRecordUrl(text, user) {
+  const text_firstblock = text.split('\n')[0];
+  const linkEnd = getHalfLength(text_firstblock);
+  const record = {
+    'text': text,
+    'createdAt': (new Date()).toISOString(),
+    'facets': [{
+      'index': {
+        'byteStart': 0,
+        'byteEnd': linkEnd
+      },
+      'features': [{
+        '$type': 'app.bsky.richtext.facet#link',
+        'uri': 'https://bsky.app/profile/'+user.handle
+      }]
+    }]
+  }
+
+  console.log(record);
   return record;
 }
 
