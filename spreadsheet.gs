@@ -84,5 +84,5 @@ function insertLog(countRecord, exectime) {
     row = row + 1;
   }
   const currentTime = new Date();
-  sheet.getRange(row,1,row,3).setValues([[currentTime, countRecord, exectime]]);
+  sheet.getRange(row,1,1,3).setValues([[currentTime, countRecord, exectime]]);
 }
