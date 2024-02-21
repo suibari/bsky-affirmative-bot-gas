@@ -6,7 +6,7 @@ function intialzeSheet() {
   return sheet;
 }
 
-function insertDb(id, ) {
+function insertDb(id) {
   const sheet = intialzeSheet();
 
   // 今の時間を取得

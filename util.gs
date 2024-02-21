@@ -6,7 +6,7 @@ function urlOf(url, params) {
 // 文字列のバイト取得
 function getHalfLength(str) {
   let len = 0;
-  let escapeStr = escape(str);
+  let escapeStr = encodeURI(str);
   for (let i = 0; i < escapeStr.length; i++, len++) {
     if (escapeStr.charAt(i) == "%") {
       if (escapeStr.charAt(++i) == "u") {
