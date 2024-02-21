@@ -9,32 +9,40 @@ function main() {
   agent = new BskyAgent();
   const followers = agent.getFollowers();
   for (follower of followers) {
-    if (!selectDb(follower.did)) {
-      // フォロー記録がなければフォロー
-      agent.followSpecificUser(follower);
-      // あいさつポスト
-      agent.postGreets(follower);
-      // DB記録
-      insertDb(follower.did);
-    } else {
-      // フォロー記録があれば時刻比較
-      const feed = agent.getAuthorFeed(follower);
-      const row = selectDb(follower.did);
-      const trigger = row[1]; // トリガー時刻
-      console.log(trigger);
-      const postedAt = new Date(feed[0].post.indexedAt); // ポスト時刻
-      console.log(postedAt);
-      if (trigger < postedAt) {
-        Logger.log(follower.did+": detect new post!");
-        // 前回トリガーを起算として新しいポストがあるので、反応してDB更新
-        agent.replyAffermativeWord(feed[0].post);
-        updateDb(follower.did);
+    try {
+      if (!selectDb(follower.did)) {
+        // フォロー記録がなければフォロー
+        agent.followSpecificUser(follower);
+        // あいさつポスト
+        agent.postGreets(follower);
+        // DB記録
+        insertDb(follower.did);
       } else {
-        Logger.log(follower.did+": not detect new post.");
+        // フォロー記録があれば時刻比較
+        const feed = agent.getAuthorFeed(follower);
+        const row = selectDb(follower.did);
+        const trigger = row[1]; // トリガー時刻
+        console.log(trigger);
+        const postedAt = new Date(feed[0].post.indexedAt); // ポスト時刻
+        console.log(postedAt);
+        if (trigger < postedAt) {
+          Logger.log(follower.did+": detect new post!");
+          // 前回トリガーを起算として新しいポストがあるので、反応してDB更新
+          agent.replyAffermativeWord(feed[0].post);
+          updateDb(follower.did);
+        } else {
+          Logger.log(follower.did+": not detect new post.");
+        }
       }
+    } catch(err) {
+      // エラー発生時はそのフォロワーだけスキップ
+      console.error(err);
     }
   };
 
-  Logger.log("total number of records: "+agent.countRecord);
-  Logger.log("total exec time: "+timer.toc()+"[s]");
+  const countRecord = agent.countRecord;
+  const exectime = timer.toc();
+  insertLog(countRecord, exectime);
+  Logger.log("total number of records: "+countRecord);
+  Logger.log("total exec time: "+exectime+"[s]");
 }

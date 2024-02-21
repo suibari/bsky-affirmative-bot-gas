@@ -70,3 +70,19 @@ function getRandomWord() {
   const text = sheet.getRange(rand, 1).getValue();
   return text;
 }
+
+function insertLog(countRecord, exectime) {
+  const id_sheet = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
+
+  const file = SpreadsheetApp.openById(id_sheet);
+  const sheet = file.getSheetByName('log');
+
+  let row = sheet.getLastRow();
+  if (row == 0) {
+    row = 1;
+  } else {
+    row = row + 1;
+  }
+  const currentTime = new Date();
+  sheet.getRange(row,1,row,3).setValues([[currentTime, countRecord, exectime]]);
+}
