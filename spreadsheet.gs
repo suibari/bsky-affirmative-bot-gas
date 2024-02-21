@@ -64,9 +64,10 @@ function getRandomWord() {
   const file = SpreadsheetApp.openById(id_sheet);
   const sheet = file.getSheetByName('affirmative_word');
   
-  // スプレッドシートA1~A100からランダムにテキストを持ってくる
+  // スプレッドシートからランダムにテキストを持ってくる
+  const row = sheet.getLastRow();
   let rand = Math.random();
-  rand = Math.floor(rand*100)+1; // 1~100のランダムな整数
+  rand = Math.floor(rand*row)+1; // 1~最終行のランダムな整数
   const text = sheet.getRange(rand, 1).getValue();
   return text;
 }

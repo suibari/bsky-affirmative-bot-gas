@@ -28,7 +28,8 @@ class BskyAgent {
   replyAffermativeWord(replypost) {
     const url = 'https://bsky.social/xrpc/com.atproto.repo.createRecord';
 
-    const text = getRandomWord();
+    let text = getRandomWord();
+    text = text.replace("${name}", replypost.author.displayName);
     
     const data = {
       'repo': this.did,
