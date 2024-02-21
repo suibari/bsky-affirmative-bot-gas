@@ -21,12 +21,12 @@ function main() {
       const postedAt = new Date(feed[0].post.indexedAt); // ポスト時刻
       console.log(postedAt);
       if (trigger < postedAt) {
-        console.log("detect new post!");
+        console.log(follower.did+": detect new post!");
         // 前回トリガーを起算として新しいポストがあるので、反応してDB更新
         replyAffermativeWord(feed[0].post);
         updateDb(follower.did);
       } else {
-        console.log("not detect new post.");
+        console.log(follower.did+": not detect new post.");
       }
     }
   };
