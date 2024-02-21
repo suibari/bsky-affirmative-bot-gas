@@ -42,7 +42,7 @@ function main() {
 
   const countRecord = agent.countRecord;
   const exectime = timer.toc();
-  insertLog(countRecord, exectime);
+  insertLog(followers.length, countRecord, exectime);
   Logger.log("total number of records: "+countRecord);
   Logger.log("total exec time: "+exectime+"[s]");
 }
