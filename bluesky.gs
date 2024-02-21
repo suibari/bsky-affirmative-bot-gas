@@ -18,6 +18,7 @@ class BskyAgent {
     };
 
     const response = UrlFetchApp.fetch(url, options);
+    this.countRecord = 1;
     const session = JSON.parse(response.getContentText());
     this.jwt = session.accessJwt;
     this.did = session.did;
@@ -45,6 +46,7 @@ class BskyAgent {
     };
 
     const response = UrlFetchApp.fetch(url, options);
+    this.countRecord++;
     const responseJSON = JSON.parse(response.getContentText());
     console.log(responseJSON);
     return responseJSON;
@@ -77,6 +79,7 @@ class BskyAgent {
     };
 
     const response = UrlFetchApp.fetch(url, options);
+    this.countRecord++;
     const responseJSON = JSON.parse(response.getContentText());
     console.log(responseJSON);
     return responseJSON;
@@ -105,6 +108,7 @@ class BskyAgent {
     };
 
     const response = UrlFetchApp.fetch(url, options);
+    this.countRecord++;
     const responseJSON = JSON.parse(response.getContentText());
     console.log(responseJSON);
     return responseJSON;
@@ -127,6 +131,7 @@ class BskyAgent {
     };
 
     const response = UrlFetchApp.fetch(urlOf(url, data), options);
+    this.countRecord++;
     const responseJSON = JSON.parse(response.getContentText());
     const followers = responseJSON.followers;
     console.log(followers);
@@ -151,6 +156,7 @@ class BskyAgent {
     };
 
     const response = UrlFetchApp.fetch(urlOf(url, data), options);
+    this.countRecord++;
     const responseJSON = JSON.parse(response.getContentText());
     const feed = responseJSON.feed;
     console.log(feed);

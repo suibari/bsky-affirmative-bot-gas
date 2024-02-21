@@ -19,9 +19,14 @@ function getHalfLength(str) {
   return len;
 }
 
-function test() {
-  const text = "@suibari\nこんにちは！";
-  const text_arr = text.split('\n');
-  const result = getHalfLength(text_arr[0]);
-  console.log(result);
+// tictoc
+class Timer {
+  tic() {
+    this.start = new Date();
+  }
+  toc() {
+    const end = new Date();
+    const result = (end - this.start)/1000; // sec
+    return result;
+  }
 }

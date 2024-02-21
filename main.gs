@@ -3,6 +3,9 @@
 //   Blueskyはユーザを何度もフォローできてしまうのでこうする(そのたびに通知が飛んでしまうのを防ぐ)
 // * DBの時刻と最新ポストの時刻を比較し、後者が新しければ、そのポストにリプライする
 function main() {
+  timer = new Timer();
+  timer.tic();
+
   agent = new BskyAgent();
   const followers = agent.getFollowers();
   for (follower of followers) {
@@ -31,4 +34,7 @@ function main() {
       }
     }
   };
+
+  Logger.log("total number of records: "+agent.countRecord);
+  Logger.log("total exec time: "+timer.toc()+"[s]");
 }
