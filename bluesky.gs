@@ -86,6 +86,38 @@ class BskyAgent {
     return responseJSON;
   }
 
+  // あいさつを返信
+  replyGreets(replypost) {
+    const url = 'https://bsky.social/xrpc/com.atproto.repo.createRecord';
+
+    const text = "こんにちは！\n"+
+                 "全肯定botたんです！\n"+
+                 replypost.author.displayName+"さんのポストに全肯定でリプライするよ！\n"+
+                 "すぐには反応できないかもだけど許してね～。\n"+
+                 "これからもよろしくね！";
+    
+    const data = {
+      'repo': this.did,
+      'collection': 'app.bsky.feed.post',
+      'record': createRecordReply(text, replypost)
+    };
+
+    const options = {
+      'method': 'post',
+      'headers': {
+        'Authorization': `Bearer ${this.jwt}`,
+        'Content-Type': 'application/json; charset=UTF-8'
+      },
+      'payload': JSON.stringify(data),
+    };
+
+    const response = UrlFetchApp.fetch(url, options);
+    this.countRecord++;
+    const responseJSON = JSON.parse(response.getContentText());
+    console.log(responseJSON);
+    return responseJSON;
+  }
+
   // 指定ユーザをフォロー
   followSpecificUser(user) {
     const url = 'https://bsky.social/xrpc/com.atproto.repo.createRecord';

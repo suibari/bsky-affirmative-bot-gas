@@ -14,7 +14,8 @@ function main() {
         // フォロー記録がなければフォロー
         agent.followSpecificUser(follower);
         // あいさつポスト
-        agent.postGreets(follower);
+        const feed = agent.getAuthorFeed(follower);
+        agent.replyGreets(feed[0].post);
         // DB記録
         insertDb(follower.did);
       } else {
