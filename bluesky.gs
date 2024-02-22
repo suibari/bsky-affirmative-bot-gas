@@ -120,7 +120,8 @@ class BskyAgent {
     const url = 'https://bsky.social/xrpc/app.bsky.graph.getFollowers'
 
     const data = {
-      'actor': this.did
+      'actor': this.did,
+      'limit': 100
     };
 
     const options = {
