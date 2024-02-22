@@ -11,11 +11,11 @@ function main() {
   for (follower of followers) {
     try {
       if (!selectDb(follower.did)) {
+        Logger.log(follower.did+": follow newly!");
         // フォロー記録がなければフォロー
         agent.followSpecificUser(follower);
         // あいさつポスト
-        const feed = agent.getAuthorFeed(follower);
-        agent.replyGreets(feed[0].post);
+        agent.postGreets(feed[0].post);
         // DB記録
         insertDb(follower.did);
       } else {
@@ -27,10 +27,15 @@ function main() {
         const postedAt = new Date(feed[0].post.indexedAt); // ポスト時刻
         console.log(postedAt);
         if (trigger < postedAt) {
-          Logger.log(follower.did+": detect new post!");
-          // 前回トリガーを起算として新しいポストがあるので、反応してDB更新
-          agent.replyAffermativeWord(feed[0].post);
-          updateDb(follower.did);
+          if (!agent.isMention(feed[0].post)) {
+            Logger.log(follower.did+": detect new post!");
+            // 前回トリガーを起算として新しいポストがあり、かつメンションでない
+            agent.replyAffermativeWord(feed[0].post);
+            updateDb(follower.did);  
+          } else {
+            // メンション検出
+            Logger.log(follower.did+": not detect new post because of mention.");  
+          }
         } else {
           Logger.log(follower.did+": not detect new post.");
         }

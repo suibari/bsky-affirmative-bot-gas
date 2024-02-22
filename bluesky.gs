@@ -58,11 +58,11 @@ class BskyAgent {
     const url = 'https://bsky.social/xrpc/com.atproto.repo.createRecord';
 
     const text = "@"+user.handle+"\n"+
-                "こんにちは！\n"+
-                "全肯定botたんです！\n"+
-                "あなたのポストに全肯定でリプライするよ！\n"+
-                "すぐには反応できないかもだけど許してね～。\n"+
-                "これからもよろしくね！";
+                 "こんにちは！\n"+
+                 "全肯定botたんです！\n"+
+                 "あなたのポストに全肯定でリプライするよ！\n"+
+                 "すぐには反応できないかもだけど許してね～。\n"+
+                 "これからもよろしくね！";
     
     const data = {
       'repo': this.did,
@@ -196,6 +196,20 @@ class BskyAgent {
     console.log(feed);
     return feed;
   }
+
+  isMention(post) {
+    if ('facets' in post.record) {
+      const facets = post.record.facets;
+      for (const facet of facets) {
+        for (const feature of facet.features) {
+          if (feature.$type == 'app.bsky.richtext.facet#mention') {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
 }
 
 function createRecord(text) {
@@ -240,6 +254,10 @@ function createRecordUrl(text, user) {
       'features': [{
         '$type': 'app.bsky.richtext.facet#link',
         'uri': 'https://bsky.app/profile/'+user.handle
+      },
+      {
+        '$type': 'app.bsky.richtext.facet#mention',
+        'did': user.did
       }]
     }]
   }
