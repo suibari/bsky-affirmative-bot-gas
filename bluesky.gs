@@ -18,7 +18,8 @@ class BskyAgent {
     };
 
     const response = UrlFetchApp.fetch(url, options);
-    this.countRecord = 1;
+    this.countFetch = 1
+    this.countRecord = 0;
     const session = JSON.parse(response.getContentText());
     this.jwt = session.accessJwt;
     this.did = session.did;
@@ -47,7 +48,8 @@ class BskyAgent {
     };
 
     const response = UrlFetchApp.fetch(url, options);
-    this.countRecord++;
+    this.countFetch = this.countFetch + 1;
+    this.countRecord = this.countRecord + 3;
     const responseJSON = JSON.parse(response.getContentText());
     console.log(responseJSON);
     return responseJSON;
@@ -80,7 +82,8 @@ class BskyAgent {
     };
 
     const response = UrlFetchApp.fetch(url, options);
-    this.countRecord++;
+    this.countFetch = this.countFetch + 1;
+    this.countRecord = this.countRecord + 3;
     const responseJSON = JSON.parse(response.getContentText());
     console.log(responseJSON);
     return responseJSON;
@@ -112,7 +115,8 @@ class BskyAgent {
     };
 
     const response = UrlFetchApp.fetch(url, options);
-    this.countRecord++;
+    this.countFetch = this.countFetch + 1;
+    this.countRecord = this.countRecord + 3;
     const responseJSON = JSON.parse(response.getContentText());
     console.log(responseJSON);
     return responseJSON;
@@ -141,7 +145,7 @@ class BskyAgent {
     };
 
     const response = UrlFetchApp.fetch(url, options);
-    this.countRecord++;
+    this.countFetch = this.countFetch + 1;
     const responseJSON = JSON.parse(response.getContentText());
     console.log(responseJSON);
     return responseJSON;
@@ -149,6 +153,8 @@ class BskyAgent {
 
   // フォロワーの配列を取得
   getFollowers() {
+    let responseJSON = '';
+    let followers = [];
     const url = 'https://bsky.social/xrpc/app.bsky.graph.getFollowers'
 
     const data = {
@@ -165,9 +171,21 @@ class BskyAgent {
     };
 
     const response = UrlFetchApp.fetch(urlOf(url, data), options);
-    this.countRecord++;
-    const responseJSON = JSON.parse(response.getContentText());
-    const followers = responseJSON.followers;
+    this.countFetch = this.countFetch + 1;
+    responseJSON = JSON.parse(response.getContentText());
+    followers = followers.concat(responseJSON.followers);
+    while ('cursor' in responseJSON) {
+      const datawithcursor = {
+        'actor': this.did,
+        'limit': 100,
+        'cursor': responseJSON.cursor
+      };
+
+      const response = UrlFetchApp.fetch(urlOf(url, datawithcursor), options);
+      this.countFetch = this.countFetch + 1;
+      responseJSON = JSON.parse(response.getContentText());
+      followers = followers.concat(responseJSON.followers);
+    }
     console.log(followers);
     return followers;
   }
@@ -190,7 +208,7 @@ class BskyAgent {
     };
 
     const response = UrlFetchApp.fetch(urlOf(url, data), options);
-    this.countRecord++;
+    this.countFetch = this.countFetch + 1;
     const responseJSON = JSON.parse(response.getContentText());
     const feed = responseJSON.feed;
     console.log(feed);

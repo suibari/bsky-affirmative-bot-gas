@@ -72,7 +72,7 @@ function getRandomWord() {
   return text;
 }
 
-function insertLog(countFollower, countRecord, exectime) {
+function insertLog(countFollower, countFetch, countRecord, exectime) {
   const id_sheet = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
 
   const file = SpreadsheetApp.openById(id_sheet);
@@ -80,5 +80,5 @@ function insertLog(countFollower, countRecord, exectime) {
 
   let row = sheet.getLastRow() + 1;
   const currentTime = new Date();
-  sheet.getRange(row,1,1,4).setValues([[currentTime, countFollower, countRecord, exectime]]);
+  sheet.getRange(row,1,1,5).setValues([[currentTime, countFollower, countFetch, countRecord, exectime]]);
 }

@@ -8,7 +8,7 @@ function main() {
 
   agent = new BskyAgent();
   const followers = agent.getFollowers();
-  for (follower of followers) {
+  for (const follower of followers) {
     try {
       if (!selectDb(follower.did)) {
         Logger.log(follower.did+": follow newly!");
@@ -24,20 +24,23 @@ function main() {
         const row = selectDb(follower.did);
         const trigger = row[1]; // トリガー時刻
         console.log(trigger);
-        const postedAt = new Date(feed[0].post.indexedAt); // ポスト時刻
-        console.log(postedAt);
-        if (trigger < postedAt) {
-          if (!agent.isMention(feed[0].post)) {
-            Logger.log(follower.did+": detect new post!");
-            // 前回トリガーを起算として新しいポストがあり、かつメンションでない
-            agent.replyAffermativeWord(feed[0].post);
-            updateDb(follower.did);  
+        if (feed.length > 0) {
+          // 1つ以上ポストがある
+          const postedAt = new Date(feed[0].post.indexedAt); // ポスト時刻
+          console.log(postedAt);
+          if (trigger < postedAt) {
+            if (!agent.isMention(feed[0].post)) {
+              Logger.log(follower.did+": detect new post!");
+              // 前回トリガーを起算として新しいポストがあり、かつメンションでない
+              agent.replyAffermativeWord(feed[0].post);
+              updateDb(follower.did);  
+            } else {
+              // メンション検出
+              Logger.log(follower.did+": not detect new post because of mention.");  
+            }
           } else {
-            // メンション検出
-            Logger.log(follower.did+": not detect new post because of mention.");  
+            Logger.log(follower.did+": not detect new post.");
           }
-        } else {
-          Logger.log(follower.did+": not detect new post.");
         }
       }
     } catch(err) {
@@ -46,9 +49,10 @@ function main() {
     }
   };
 
+  const countFetch = agent.countFetch;
   const countRecord = agent.countRecord;
   const exectime = timer.toc();
-  insertLog(followers.length, countRecord, exectime);
-  Logger.log("total number of records: "+countRecord);
+  insertLog(followers.length, countFetch, countRecord, exectime);
+  Logger.log("total number of fetch: "+countFetch);
   Logger.log("total exec time: "+exectime+"[s]");
 }
