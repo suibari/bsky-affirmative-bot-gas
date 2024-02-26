@@ -14,33 +14,28 @@ function main() {
         Logger.log(follower.did+": follow newly!");
         // フォロー記録がなければフォロー
         agent.followSpecificUser(follower);
-        // あいさつポスト
-        agent.postGreets(follower);
+        // あいさつリプライ
+        const feeds = agent.getAuthorFeed(follower);
+        const feed = agent.getLatestAuthorFeedWithoutMention(feeds)
+        agent.replyGreets(feed.post);
         // DB記録
         insertDb(follower.did);
       } else {
         // フォロー記録があれば時刻比較
-        const feed = agent.getAuthorFeed(follower);
+        const feeds = agent.getAuthorFeed(follower);
+        const feed = agent.getLatestAuthorFeedWithoutMention(feeds);
         const row = selectDb(follower.did);
         const trigger = row[1]; // トリガー時刻
         console.log(trigger);
-        if (feed.length > 0) {
-          // 1つ以上ポストがある
-          const postedAt = new Date(feed[0].post.indexedAt); // ポスト時刻
-          console.log(postedAt);
-          if (trigger < postedAt) {
-            if (!agent.isMention(feed[0].post)) {
-              Logger.log(follower.did+": detect new post!");
-              // 前回トリガーを起算として新しいポストがあり、かつメンションでない
-              agent.replyAffermativeWord(feed[0].post);
-              updateDb(follower.did);  
-            } else {
-              // メンション検出
-              Logger.log(follower.did+": not detect new post because of mention.");  
-            }
-          } else {
-            Logger.log(follower.did+": not detect new post.");
-          }
+        const postedAt = new Date(feed.post.indexedAt); // ポスト時刻
+        console.log(postedAt);
+        if (trigger < postedAt) {
+          Logger.log(follower.did+": detect new post!");
+          // 前回トリガーを起算として新しいポストがあり、かつメンションでない
+          agent.replyAffermativeWord(feed.post);
+          updateDb(follower.did);  
+        } else {
+          Logger.log(follower.did+": not detect new post.");
         }
       }
     } catch(err) {
