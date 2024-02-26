@@ -238,6 +238,16 @@ class BskyAgent {
     // feed0件や全てリポストなどの場合
     return;
   }
+
+  getLatestAuthorFeedWithoutMention(author, feeds) {
+    for (const feed of feeds) {
+      if ((author.did == feed.post.creator.did) && (!isMention(feed.post))) {
+        return feed;
+      };
+    };
+    // feed0件や全てリポストなどの場合
+    return;
+  }
 }
 
 function createRecord(text) {
