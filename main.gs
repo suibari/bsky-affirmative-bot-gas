@@ -16,26 +16,30 @@ function main() {
         agent.followSpecificUser(follower);
         // あいさつリプライ
         const feeds = agent.getAuthorFeed(follower);
-        const feed = agent.getLatestAuthorFeedWithoutMention(feeds)
-        agent.replyGreets(feed.post);
+        const feed = agent.getLatestAuthorFeedWithoutMention(follower, feeds)
+        if (feed) {
+          agent.replyGreets(feed.post);
+        }
         // DB記録
         insertDb(follower.did);
       } else {
         // フォロー記録があれば時刻比較
         const feeds = agent.getAuthorFeed(follower);
-        const feed = agent.getLatestAuthorFeedWithoutMention(feeds);
-        const row = selectDb(follower.did);
-        const trigger = row[1]; // トリガー時刻
-        console.log(trigger);
-        const postedAt = new Date(feed.post.indexedAt); // ポスト時刻
-        console.log(postedAt);
-        if (trigger < postedAt) {
-          Logger.log(follower.did+": detect new post!");
-          // 前回トリガーを起算として新しいポストがあり、かつメンションでない
-          agent.replyAffermativeWord(feed.post);
-          updateDb(follower.did);  
-        } else {
-          Logger.log(follower.did+": not detect new post.");
+        const feed = agent.getLatestAuthorFeedWithoutMention(follower, feeds);
+        if (feed) {
+          const row = selectDb(follower.did);
+          const trigger = row[1]; // トリガー時刻
+          console.log(trigger);
+          const postedAt = new Date(feed.post.indexedAt); // ポスト時刻
+          console.log(postedAt);
+          if (trigger < postedAt) {
+            Logger.log(follower.did+": detect new post!");
+            // 前回トリガーを起算として新しいポストがあり、かつメンションでない
+            agent.replyAffermativeWord(feed.post);
+            updateDb(follower.did);  
+          } else {
+            Logger.log(follower.did+": not detect new post.");
+          }
         }
       }
     } catch(err) {

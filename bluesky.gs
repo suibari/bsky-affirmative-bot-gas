@@ -241,7 +241,7 @@ class BskyAgent {
 
   getLatestAuthorFeedWithoutMention(author, feeds) {
     for (const feed of feeds) {
-      if ((author.did == feed.post.creator.did) && (!isMention(feed.post))) {
+      if ((author.did == feed.post.author.did) && (!this.isMention(feed.post))) {
         return feed;
       };
     };
