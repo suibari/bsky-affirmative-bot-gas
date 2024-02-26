@@ -95,7 +95,7 @@ class BskyAgent {
 
     const text = "こんにちは！\n"+
                  "全肯定botたんです！\n"+
-                 replypost.author.displayName+"さんのポストに全肯定でリプライするよ！\n"+
+                 "これから"+replypost.author.displayName+"さんのポストに時々全肯定でリプライするよ！\n"+
                  "すぐには反応できないかもだけど許してね～。\n"+
                  "これからもよろしくね！";
     
