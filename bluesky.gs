@@ -228,6 +228,16 @@ class BskyAgent {
     }
     return false;
   }
+
+  getLatestAuthorFeed(author, feeds) {
+    for (const feed of feeds) {
+      if (author.did == feed.post.creator.did) {
+        return feed;
+      };
+    };
+    // feed0件や全てリポストなどの場合
+    return;
+  }
 }
 
 function createRecord(text) {
